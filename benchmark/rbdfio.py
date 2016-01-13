@@ -40,6 +40,7 @@ class RbdFio(Benchmark):
         self.client_ra = config.get('client_ra', 128)
         self.direct = config.get('direct', 1)
         self.poolname = "cbt-kernelrbdfio"
+	self.minimal = config.get('minimal', False)
 
         self.run_dir = '%s/rbdfio/osd_ra-%08d/client_ra-%08d/op_size-%08d/concurrent_procs-%03d/iodepth-%03d/%s' % (self.run_dir, int(self.osd_ra), int(self.client_ra), int(self.op_size), int(self.concurrent_procs), int(self.iodepth), self.mode)
         self.out_dir = '%s/rbdfio/osd_ra-%08d/client_ra-%08d/op_size-%08d/concurrent_procs-%03d/iodepth-%03d/%s' % (self.archive_dir, int(self.osd_ra), int(self.client_ra), int(self.op_size), int(self.concurrent_procs), int(self.iodepth), self.mode)
@@ -123,6 +124,8 @@ class RbdFio(Benchmark):
             fio_cmd += ' --time_based'
         if self.random_distribution is not None:
             fio_cmd += ' --random_distribution=%s' % self.random_distribution
+	if self.minimal:
+	    fio_cmd += ' --minimal'
         fio_cmd += ' %s > %s' % (self.names, out_file)
         if self.log_avg_msec is not None:
             fio_cmd += ' --log_avg_msec=%s' % self.log_avg_msec

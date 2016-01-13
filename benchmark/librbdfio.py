@@ -41,6 +41,7 @@ class LibrbdFio(Benchmark):
         self.rate_iops = config.get('rate_iops', None)
         self.poolname = "cbt-librbdfio"
         self.use_existing_volumes = config.get('use_existing_volumes', False)
+	self.minimal = config.get('minimal', False)
 
 	self.total_procs = self.procs_per_volume * self.volumes_per_client * len(settings.getnodes('clients').split(','))
         self.run_dir = '%s/osd_ra-%08d/op_size-%08d/concurrent_procs-%03d/iodepth-%03d/%s' % (self.run_dir, int(self.osd_ra), int(self.op_size), int(self.total_procs), int(self.iodepth), self.mode)
@@ -156,6 +157,8 @@ class LibrbdFio(Benchmark):
             fio_cmd += ' --log_avg_msec=%s' % self.log_avg_msec
         if self.rate_iops is not None:
             fio_cmd += ' --rate_iops=%s' % self.rate_iops
+	if self.minimal:
+	    fio_cmd += ' --minimal'
 
         # End the fio_cmd
         fio_cmd += ' %s > %s' % (self.names, out_file)
